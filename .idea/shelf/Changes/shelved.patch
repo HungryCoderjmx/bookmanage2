@@ -1,0 +1,878 @@
+Index: src/main/java/com/igeekhome/service/BookManageSystem2.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/igeekhome/service/BookManageSystem2.java b/src/main/java/com/igeekhome/service/BookManageSystem2.java
+new file mode 100644
+--- /dev/null	(date 1690597880925)
++++ b/src/main/java/com/igeekhome/service/BookManageSystem2.java	(date 1690597880925)
+@@ -0,0 +1,411 @@
++package com.igeekhome.service;
++
++import com.igeekhome.model.Book;
++import com.igeekhome.util.JdbcUtil;
++
++import java.sql.*;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.Scanner;
++
++// 图书管理系统
++public class BookManageSystem2 {
++
++    public static void main(String[] args) throws SQLException {
++
++        // 初始化书籍信息
++        // 创建HashMap对象 key: 书籍类型 value：书籍的List集合
++        HashMap<String, ArrayList<Book>> bookMap = new HashMap<>();
++
++        // 添加数据信息
++//        ArrayList<Book> bookList1 = new ArrayList<>();
++//        bookList1.add(new Book("名著","西游记","吴承恩",30));
++//        bookList1.add(new Book("名著","水浒传","施耐庵",35));
++//
++//
++//        ArrayList<Book> bookList2 = new ArrayList<>();
++//        bookList2.add(new Book("科幻","三体","刘慈欣",25));
++//
++//        // map添加书籍信息
++//        bookMap.put("名著",bookList1);
++//        bookMap.put("科幻",bookList2);
++
++
++
++        // 创建Scanner对象
++        Scanner scanner = new Scanner(System.in);
++
++        // 图书管理系统是否运行标识
++        boolean isRunning = true;
++
++        // 模拟死循环 实现系统服务的持久 直到用户输入退出系统命令后再退出系统
++        while (isRunning){
++
++            System.out.println("-----欢迎使用图书管理系统-----");
++            System.out.println("1.查看所有的图书");
++            System.out.println("2.添加图书");
++            System.out.println("3.删除图书");
++            System.out.println("4.修改图书");
++            System.out.println("5.退出系统");
++
++            System.out.println("");
++
++            System.out.println("请输入您的选择(1-5):");
++
++            // 接收键盘录入的数据
++            int chooseNum = scanner.nextInt();
++
++            switch (chooseNum){
++
++                case 1:
++                    // 查看所有的图书
++                    queryAllBookInfo();
++                 break;
++
++                case 2:
++                    // 添加图书
++                    addBook();
++                  break;
++
++                case 3:
++                    // 删除图书
++                    deleteBook();
++                    break;
++
++                case 4:
++                    // 修改图书
++                    updateBook();
++                    break;
++
++
++                case 5:
++                    // 退出系统
++                    isRunning = false;
++                    System.out.println("图书管理系统已退出,欢迎下次使用");
++                    break;
++
++                default:
++                    System.out.println("您输入的指令有误，请重新输入");
++
++
++            }
++
++        }
++
++
++    }
++
++
++    /**
++     * 查看所有书籍信息
++     */
++    public static  void queryAllBookInfo() throws SQLException {
++
++        System.out.println("书籍类型\t\t书名\t\t作者\t\t价格");
++//        // 对bookMap进行遍历
++//        Set<Map.Entry<String, ArrayList<Book>>> books = bookMap.entrySet();
++//
++//        for (Map.Entry<String, ArrayList<Book>> book : books) {
++//            // 获取书籍类型
++//            String bookType = book.getKey();
++//            System.out.println(bookType);
++//
++//            // 获取书籍集合
++//            ArrayList<Book> bookList = book.getValue();
++//            for (Book bookInfo : bookList) {
++//                System.out.println("\t\t\t"+bookInfo.getName()+"\t"+bookInfo.getAuthor()+"\t"+bookInfo.getPrice());
++//            }
++//
++//        }
++
++        //获取数据库连接对象
++        Connection connection = JdbcUtil.getConnection();
++
++        //获取执行sql对象
++        Statement statement = JdbcUtil.getStatement();
++
++        //定义查询的sql
++        String querySql = "select * from book_info";
++
++        //获取结果集对象
++        ResultSet resultSet = JdbcUtil.getResultSet(querySql);
++
++        //对结果集对象进行遍历
++        while (resultSet.next()){
++
++
++            String bookType = resultSet.getString("type");
++            System.out.print(bookType);
++
++            String bookName = resultSet.getString("name");
++            System.out.print("\t\t"+bookName);
++
++            String authorName = resultSet.getString("author");
++            System.out.print("\t\t"+authorName);
++
++            double bookPrice = resultSet.getDouble("price");
++            System.out.println("\t\t"+bookPrice);
++
++        }
++
++
++    }
++
++    /**
++     * 添加书籍
++     */
++    public static void addBook() throws SQLException {
++
++//        System.out.println("请输入添加的书籍类型:");
++//        String bookType = scanner.next();
++//        System.out.println("请输入添加的书籍名称:");
++//        String bookName = scanner.next();
++//        System.out.println("请输入添加的书籍作者:");
++//        String authorName = scanner.next();
++//        System.out.println("请输入添加的书籍价格:");
++//        double price = scanner.nextDouble();
++//
++//        // 封装成为书籍对象
++//        Book addBook = new Book(bookType, bookName, authorName, price);
++//
++//        // 判断添加的书籍类型在bookMap是否存在
++//        ArrayList<Book> bookList = bookMap.get(bookType);
++//
++//        if(bookList == null){
++//            // 新增的书籍类型在bookMap中不存在 需要进行键值对的添加
++//            ArrayList<Book> addBookList = new ArrayList<Book>();
++//            addBookList.add(addBook);
++//
++//            bookMap.put(bookType,addBookList);
++//
++//        }else {
++//            // 新增的书籍类型在bookMap中存在 需要在对应的书籍List集合中添加该书信息
++//            bookList.add(addBook);
++//        }
++//
++//        System.out.println("添加"+bookName+"成功!");
++
++        //获取数据库连接对象
++        Connection connection = JdbcUtil.getConnection();
++
++        //定义插入sql语句
++        String insertSql = "insert into book_info(type,name,author,price) values(?,?,?,?)";
++
++        PreparedStatement preparedStatement = JdbcUtil.getPreparedStatement(connection, insertSql);
++
++        Scanner scanner = new Scanner(System.in);
++
++
++        System.out.println("请输入要添加的书籍类型：");
++        String bookType = scanner.nextLine();
++        preparedStatement.setString(1,bookType);
++        System.out.println("请输入要添加的书籍名称：");
++        String bookName = scanner.nextLine();
++        preparedStatement.setString(2,bookName);
++        System.out.println("请输入要添加的作者姓名：");
++        String author = scanner.nextLine();
++        preparedStatement.setString(3,author);
++        System.out.println("请输入添加书籍的价格：");
++        double price = scanner.nextDouble();
++        preparedStatement.setDouble(4,price);
++
++        int count = preparedStatement.executeUpdate();
++
++        System.out.println(count==1 ? "添加成功":"添加失败");
++
++
++    }
++
++
++    /**
++     * 删除书籍
++     */
++    public static void deleteBook() throws SQLException {
++//        System.out.println("请输入要删除的书籍类型:");
++//        String bookType = scanner.next();
++//
++//        // 判断要删除的书籍类型在bookMap中是否存在
++//        boolean isExist = bookMap.containsKey(bookType);
++//
++//        // 如果不存在 方法直接返回
++//        if(!isExist){
++//            System.out.println("您要删除的书籍类型:"+bookType+"在系统中不存在");
++//            return;
++//        }
++//
++//        System.out.println("请输入要删除的书籍名称:");
++//        String deleteBookName = scanner.next();
++//
++//        // 根据书籍类型获取对应的书籍集合
++//        ArrayList<Book> bookList = bookMap.get(bookType);
++//
++//
++//        // 要删除的书籍在bookList是否存在的标识
++//        boolean bookExist = false;
++//
++//        // 遍历书籍集合 找到要删除的书籍
++//        for (int i = 0; i < bookList.size(); i++) {
++//            Book book = bookList.get(i);
++//            if(book.getName().equals(deleteBookName)){
++//                bookList.remove(i);
++//
++//                bookExist = true;
++//
++//                System.out.println("删除"+deleteBookName+"成功!");
++//
++//                // 删除书籍成功后 需要判断该类型的书籍列表中元素个数是否为0 如果为0 则在bookMap中删除该书籍类型
++//                if(bookList.size() == 0){
++//                    bookMap.remove(bookType);
++//                }
++//            }
++//    }
++//
++//
++//
++//        if(!bookExist){
++//            System.out.println("您输入的书名为:"+deleteBookName+"在系统中不存在");
++//        }
++
++        Connection connection = JdbcUtil.getConnection();
++
++        String deleteSql = "delete from book_info where type=? and name=? and author=? and price=?";
++
++        PreparedStatement preparedStatement = JdbcUtil.getPreparedStatement(connection, deleteSql);
++
++        Scanner scanner = new Scanner(System.in);
++
++
++        System.out.println("请输入要删除的书籍类型：");
++        String bookType = scanner.nextLine();
++        preparedStatement.setString(1,bookType);
++        System.out.println("请输入要删除的书籍名称：");
++        String bookName = scanner.nextLine();
++        preparedStatement.setString(2,bookName);
++        System.out.println("请输入要删除的作者姓名：");
++        String author = scanner.nextLine();
++        preparedStatement.setString(3,author);
++        System.out.println("请输入删除书籍的价格：");
++        double price = scanner.nextDouble();
++        preparedStatement.setDouble(4,price);
++
++        int count = preparedStatement.executeUpdate();
++
++        System.out.println(count==1 ? "删除成功":"删除失败");
++
++    }
++
++
++    /**
++     * 修改书籍
++     */
++    public static void updateBook() throws SQLException {
++
++//        System.out.println("输入要修改的书籍类型:");
++//        String bookType = scanner.next();
++//
++//        // 判断要修改的书籍类型在bookMap中是否存在
++//        boolean isExist = bookMap.containsKey(bookType);
++//
++//        // 如果不存在 方法直接返回
++//        if(!isExist){
++//            System.out.println("您要修改的书籍类型:"+bookType+"在系统中不存在");
++//            return;
++//        }
++//
++//
++//        System.out.println("输入要修改的书名:");
++//        String oldBookName = scanner.next();
++//
++//        System.out.println("输入要修改的书籍作者:");
++//        String oldAuthorName = scanner.next();
++//
++//        System.out.println("输入要修改的书籍价格:");
++//        double oldPrice = scanner.nextDouble();
++//
++//
++//        System.out.println("输入修改后的书名:");
++//        String newBookName = scanner.next();
++//
++//        System.out.println("输入修改后的书籍作者:");
++//        String newAuthorName = scanner.next();
++//
++//        System.out.println("输入修改后的书籍价格:");
++//        double newPrice = scanner.nextDouble();
++//
++//
++//        ArrayList<Book> bookList = bookMap.get(bookType);
++//
++//
++//        boolean bookExist = false;
++//
++//        for (int i = 0; i < bookList.size(); i++) {
++//            Book book = bookList.get(i);
++//
++//            if(book.getName().equals(oldBookName) && book.getAuthor().equals(oldAuthorName) && book.getPrice()==oldPrice){
++//                // 更新书籍信息
++//                book.setName(newBookName);
++//                book.setAuthor(newAuthorName);
++//                book.setPrice(newPrice);
++//
++//                bookExist = true;
++//
++//                System.out.println("书籍:"+oldBookName+"已修改成功!");
++//
++//            }
++//
++//        }
++//
++//
++//        if(!bookExist){
++//            System.out.println("您输入的书籍修改信息有误!");
++//        }
++//
++//
++//
++
++        Scanner scanner = new Scanner(System.in);
++
++        System.out.println("请输入要修改的书籍类型：");
++        String oldBookType = scanner.next();
++
++        System.out.println("输入要修改的书名:");
++        String oldBookName = scanner.next();
++
++        System.out.println("输入要修改的书籍作者:");
++        String oldAuthorName = scanner.next();
++
++        System.out.println("输入要修改的书籍价格:");
++        double oldPrice = scanner.nextDouble();
++
++        Connection connection = JdbcUtil.getConnection();
++
++        String updateSql = "update book_info set type=?,name=?,author=?,price=? where type=?";
++
++        PreparedStatement preparedStatement = JdbcUtil.getPreparedStatement(connection, updateSql);
++
++        scanner.nextLine();
++
++        System.out.println("请输入修改后书籍类型：");
++        String bookType = scanner.nextLine();
++        preparedStatement.setString(1,bookType);
++        System.out.println("请输入修改后书籍名称：");
++        String bookName = scanner.nextLine();
++        preparedStatement.setString(2,bookName);
++        System.out.println("请输入要修改后作者姓名：");
++        String author = scanner.nextLine();
++        preparedStatement.setString(3,author);
++        System.out.println("请输入修改后书籍的价格：");
++        double price = scanner.nextDouble();
++        preparedStatement.setDouble(4,price);
++
++        preparedStatement.setString(5,oldBookType);
++        
++
++
++
++        int count = preparedStatement.executeUpdate();
++
++        System.out.println(count==1 ? "修改成功":"修改失败");
++    }
++
++}
+Index: src/test/java/org/example/AppTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/org/example/AppTest.java b/src/test/java/org/example/AppTest.java
+new file mode 100644
+--- /dev/null	(date 1690531875272)
++++ b/src/test/java/org/example/AppTest.java	(date 1690531875272)
+@@ -0,0 +1,38 @@
++package org.example;
++
++import junit.framework.Test;
++import junit.framework.TestCase;
++import junit.framework.TestSuite;
++
++/**
++ * Unit test for simple App.
++ */
++public class AppTest 
++    extends TestCase
++{
++    /**
++     * Create the test case
++     *
++     * @param testName name of the test case
++     */
++    public AppTest( String testName )
++    {
++        super( testName );
++    }
++
++    /**
++     * @return the suite of tests being tested
++     */
++    public static Test suite()
++    {
++        return new TestSuite( AppTest.class );
++    }
++
++    /**
++     * Rigourous Test :-)
++     */
++    public void testApp()
++    {
++        assertTrue( true );
++    }
++}
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+--- /dev/null	(date 1690531265843)
++++ b/.gitignore	(date 1690531265843)
+@@ -0,0 +1,38 @@
++target/
++!.mvn/wrapper/maven-wrapper.jar
++!**/src/main/**/target/
++!**/src/test/**/target/
++
++### IntelliJ IDEA ###
++.idea/modules.xml
++.idea/jarRepositories.xml
++.idea/compiler.xml
++.idea/libraries/
++*.iws
++*.iml
++*.ipr
++
++### Eclipse ###
++.apt_generated
++.classpath
++.factorypath
++.project
++.settings
++.springBeans
++.sts4-cache
++
++### NetBeans ###
++/nbproject/private/
++/nbbuild/
++/dist/
++/nbdist/
++/.nb-gradle/
++build/
++!**/src/main/**/build/
++!**/src/test/**/build/
++
++### VS Code ###
++.vscode/
++
++### Mac OS ###
++.DS_Store
+\ No newline at end of file
+Index: src/main/java/com/igeekhome/model/Book.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/igeekhome/model/Book.java b/src/main/java/com/igeekhome/model/Book.java
+new file mode 100644
+--- /dev/null	(date 1690553941529)
++++ b/src/main/java/com/igeekhome/model/Book.java	(date 1690553941529)
+@@ -0,0 +1,59 @@
++package com.igeekhome.model;
++
++// 图书类
++public class Book {
++
++    // 书籍类型
++    private String type;
++
++    // 书名
++    private String name;
++
++    // 作者
++    private String author;
++
++    // 价格
++    private double price;
++
++    public Book() {
++    }
++
++    public Book(String type, String name, String author, double price) {
++        this.type = type;
++        this.name = name;
++        this.author = author;
++        this.price = price;
++    }
++
++    public String getType() {
++        return type;
++    }
++
++    public void setType(String type) {
++        this.type = type;
++    }
++
++    public String getName() {
++        return name;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getAuthor() {
++        return author;
++    }
++
++    public void setAuthor(String author) {
++        this.author = author;
++    }
++
++    public double getPrice() {
++        return price;
++    }
++
++    public void setPrice(double price) {
++        this.price = price;
++    }
++}
+Index: src/main/java/com/igeekhome/util/JdbcUtil.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/igeekhome/util/JdbcUtil.java b/src/main/java/com/igeekhome/util/JdbcUtil.java
+new file mode 100644
+--- /dev/null	(date 1690528374637)
++++ b/src/main/java/com/igeekhome/util/JdbcUtil.java	(date 1690528374637)
+@@ -0,0 +1,164 @@
++package com.igeekhome.util;
++
++import java.sql.*;
++
++//jdbc工具类
++public class JdbcUtil {
++
++    private static final String URL = "jdbc:mysql://localhost:3306/test";
++    private static final String USER = "root";
++    private static final String PASSWORD = "540789";
++
++    //设置重写批处理语句为是
++    private static final String NEW_URL = "jdbc:mysql://localhost:3306/test?rewriteBatchedStatements=true";
++
++    //数据库连接对象
++    private static Connection connection;
++
++    // 执行sql对象
++    private static Statement statement;
++
++    //预编译执行sql对象
++    private static PreparedStatement preparedStatement;
++
++    //结果集对象
++    private static ResultSet resultSet;
++
++    /**
++     * 获取数据库连接对象
++     *
++     * @return数据库连接对象
++     */
++    public static Connection getConnection() {
++
++
++        try {
++            //1 加载mysql的驱动
++            Class.forName("com.mysql.jdbc.Driver");
++            //2 通过驱动管理对象获取数据库连接对象
++            connection = DriverManager.getConnection(URL, USER, PASSWORD);
++        }catch (ClassNotFoundException e){
++            e.printStackTrace();
++        }catch (SQLException throwables){
++            throwables.printStackTrace();
++        }
++        return connection;
++    }
++
++
++    public static Connection getConnectionWithParam() {
++
++        try {
++            //1 加载mysql的驱动
++            Class.forName("com.mysql.jdbc.Driver");
++            //2 通过驱动管理对象获取数据库连接对象
++            connection = DriverManager.getConnection(NEW_URL, USER, PASSWORD);
++        }catch (ClassNotFoundException e){
++            e.printStackTrace();
++        }catch (SQLException throwables){
++            throwables.printStackTrace();
++        }
++        return connection;
++    }
++
++    /**
++     * 获取执行sql对象
++     * @return
++     */
++    public static Statement getStatement(){
++        if (connection != null){
++            try {
++                statement = connection.createStatement();
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++
++        return statement;
++    }
++
++    /**
++     * 获取预编译执行sql对象
++     * @param sql sql语句
++     * @return 预编译执行sql对象
++     */
++    public static PreparedStatement getPreparedStatement(String sql){
++        if (connection!=null){
++            try {
++                preparedStatement = connection.prepareStatement(sql);
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++        return preparedStatement;
++    }
++
++    public static PreparedStatement getPreparedStatement(Connection connection, String sql){
++        if (connection!=null){
++            try {
++                preparedStatement = connection.prepareStatement(sql);
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++        return preparedStatement;
++    }
++
++    /**
++     *
++     * @param sql
++     * @return
++     */
++    public static ResultSet getResultSet(String sql){
++        if (statement != null){
++            try {
++                resultSet = statement.executeQuery(sql);
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++        return resultSet;
++    }
++
++    /**
++     * 关闭
++     */
++    public static void close(){
++
++        if (resultSet!=null){
++            try {
++                resultSet.close();
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++
++        if (preparedStatement!=null){
++            try {
++                preparedStatement.close();
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++
++        if (statement!=null){
++            try {
++                statement.close();
++            } catch (SQLException throwables) {
++                throwables.printStackTrace();
++            }
++        }
++
++        if (connection != null){
++            try{
++                connection.close();
++            }catch (SQLException throwables){
++                throwables.printStackTrace();
++            }
++        }
++    }
++
++
++
++
++}
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1690531273162)
++++ b/.idea/.gitignore	(date 1690531273162)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1690531322696)
++++ b/.idea/encodings.xml	(date 1690531322696)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1690531268500)
++++ b/.idea/misc.xml	(date 1690531268500)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+--- /dev/null	(date 1690541988152)
++++ b/pom.xml	(date 1690541988152)
+@@ -0,0 +1,46 @@
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++  <modelVersion>4.0.0</modelVersion>
++
++  <groupId>org.example</groupId>
++  <artifactId>bookmanage2</artifactId>
++  <version>1.0-SNAPSHOT</version>
++  <packaging>jar</packaging>
++
++  <name>bookmanage2</name>
++  <url>http://maven.apache.org</url>
++
++  <properties>
++      <maven.compiler.source>1.8</maven.compiler.source>
++      <maven.compiler.target>1.8</maven.compiler.target>
++    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++  </properties>
++
++  <dependencies>
++    <dependency>
++      <groupId>junit</groupId>
++      <artifactId>junit</artifactId>
++      <version>4.13.2</version>
++      <scope>test</scope>
++    </dependency>
++
++      <dependency>
++          <groupId>mysql</groupId>
++          <artifactId>mysql-connector-java</artifactId>
++          <version>5.1.31</version>
++      </dependency>
++
++  </dependencies>
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>7</source>
++                    <target>7</target>
++                </configuration>
++            </plugin>
++        </plugins>
++    </build>
++</project>
